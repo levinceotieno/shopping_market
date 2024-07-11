@@ -1,0 +1,33 @@
+<DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Orders</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>My Orders</h1>
+        <a href="/products">Back to Products</a>
+        <% orders.forEach(order => { %>
+            <div class="order">
+                <h2>Order ID: <%= order.id %></h2>
+                <p>Total Price: $<%= order.totalPrice %></p>
+                <p>Status: <%= order.status %></p>
+                <h3>Products:</h3>
+                <ul>
+                    <% order.products.forEach(item => { %>
+                        <li>
+                            <img src="<%= item.imageUrl %>" alt="<%= item.name %>" class="product-image">
+                            <%= item.name %> - Quantity: <%= item.quantity %>
+                        </li>
+                    <% }) %>
+                </ul>
+                <p>Address: <%= order.address %></p>
+                <p>Pickup Point: <%= order.pickupPoint %></p>
+            </div>
+        <% }) %>
+    </div>
+</body>
+</html>

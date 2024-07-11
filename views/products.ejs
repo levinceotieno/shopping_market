@@ -1,0 +1,40 @@
+<DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Products</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Products</h1>
+        <% if (user) { %>
+            <a href="/user/logout">Logout</a>
+            <a href="/orders">My Orders</a>
+        <% } else { %>
+            <a href="/user/login">Login</a>
+        <% } %>
+        <div id="products">
+            <% products.forEach(product => { %>
+                <div class="product">
+                    <h2><%= product.name %></h2>
+                    <p>Price: $<%= product.price %></p>
+                    <p><%= product.description %></p>
+                    <p>Status: <%= product.status %></p>
+                    <img src="<%= product.image_url %>" alt="<%= product.name %>" class="product-image">
+                    <button onclick="addToCart('<%= product.id %>', '<%= product.name %>', <%= product.price %>, '<%= product.image_url %>')">Add to Cart</button>
+                </div>
+            <% }) %>
+        </div>
+        <div id="cart">
+            <h2>Cart</h2>
+            <ul id="cart-items"></ul>
+            <p>Total: $<span id="cart-total">0</span></p>
+            <button onclick="checkout()">Checkout</button>
+        </div>
+        <div id="toast"></div>
+    </div>
+    <script src="/js/cart.js"></script>
+</body>
+</html>
