@@ -1,0 +1,1 @@
+express\nexpress-session\nejs\nsqlite3\nbcryptjs
