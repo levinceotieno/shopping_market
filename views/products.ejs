@@ -4,36 +4,93 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Products</title>
-    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/style2.css">
+    <!-- Google font link -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600&family=Open+Sans&display=swap" rel="stylesheet">
+    <style>
+        .profile-container {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .profile-container img {
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            margin-right: 10px;
+        }
+
+        .cart-icon {
+            position: relative;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+
+        .cart-icon span {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            background: red;
+            color: white;
+            border-radius: 50%;
+            padding: 2px 5px;
+            font-size: 12px;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
-        <h1>Products</h1>
-        <% if (user) { %>
-            <a href="/user/logout">Logout</a>
-            <a href="/orders">My Orders</a>
-        <% } else { %>
-            <a href="/user/login">Login</a>
-        <% } %>
-        <div id="products">
-            <% products.forEach(product => { %>
-                <div class="product">
-                    <h2><%= product.name %></h2>
-                    <p>Price: $<%= product.price %></p>
-                    <p><%= product.description %></p>
-                    <p>Status: <%= product.status %></p>
-                    <img src="<%= product.image_url %>" alt="<%= product.name %>" class="product-image">
-                    <button onclick="addToCart('<%= product.id %>', '<%= product.name %>', <%= product.price %>, '<%= product.image_url %>')">Add to Cart</button>
-                </div>
-            <% }) %>
+        <div id="toast" class="toast-container"></div>
+        <div class="profile-container">
+            <% if (user.profile_photo) { %>
+                <img src="../public/uploads/<%= user.profile_photo %>" alt="Profile Picture">
+            <% } else { %>
+                <img src="../public/images/default-profile.png" alt="Profile Picture">
+            <% } %>
+            <div class="cart-icon" onclick="toggleCart()">
+                <img src="../public/images/cart-icon.png" alt="Cart">
+                <span id="cart-count">0</span>
+            </div>
+            <% if (user) { %>
+                <a href="/user/logout" class="btn">Logout</a>
+                <a href="/orders" class="btn">My Orders</a>
+                <a href="/user/profile" class="btn">My Profile</a>
+            <% } else { %>
+                <a href="/user/login" class="btn">Login</a>
+            <% } %>
         </div>
-        <div id="cart">
-            <h2>Cart</h2>
-            <ul id="cart-items"></ul>
-            <p>Total: $<span id="cart-total">0</span></p>
-            <button onclick="checkout()">Checkout</button>
-        </div>
-        <div id="toast"></div>
+        <h1 class="h1">Products</h1>
+        <main id="main-content">
+            <article>
+                <!-- HERO -->
+                <section class="section hero" id="home">
+                    <div class="container">
+                        <div id="products">
+                            <% products.forEach(product => { %>
+                                <div class="product">
+                                    <h2 class="h2"><%= product.name %></h2>
+                                    <p>Price: Ksh.<%= product.price %></p>
+                                    <p><%= product.description %></p>
+                                    <p>Status: <%= product.status %></p>
+                                    <img src="<%= product.image_url %>" alt="<%= product.name %>" class="product-image">
+                                    <button class="btn add-cart" onclick="addToCart('<%= product.id %>', '<%= product.name %>', <%= product.price %>, '<%= product.image_url %>')">Add to Cart</button>
+                                </div>
+                            <% }) %>
+                        </div>
+                        <div id="cart">
+                            <h2 class="h2">Cart</h2>
+                            <ul id="cart-items"></ul>
+                            <p>Total: $<span id="cart-total">0</span></p>
+                            <button class="btn check-out" onclick="checkout()">Checkout</button>
+                        </div>
+                    </div>
+                </section>
+            </article>
+        </main>
     </div>
     <script src="/js/cart.js"></script>
 </body>
