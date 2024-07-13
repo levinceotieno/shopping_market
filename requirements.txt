@@ -1,1 +1,10 @@
-express\nexpress-session\nejs\nsqlite3\nbcryptjs
+certifi==2022.9.24
+chardet==5.1.0
+dbus-python==1.3.2
+distro==1.8.0
+idna==3.3
+pycairo==1.24.0
+PyGObject==3.46.0
+requests==2.31.0
+six==1.16.0
+urllib3==1.26.16
