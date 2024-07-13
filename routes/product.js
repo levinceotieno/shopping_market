@@ -33,7 +33,15 @@ router.get('/', (req, res) => {
         return res.status(500).send(err);
       }
 
-      res.render('products', { products, user });
+      // Get the cart item count for the user
+      db.get('SELECT COUNT(*) as count FROM cart WHERE user_id = ?', [req.session.userId], (err, result) => {
+        if (err) {
+          return res.status(500).send(err);
+        }
+
+        const cartItemCount = result.count;
+        res.render('products', { products, user, cartItemCount });
+      });
     });
   });
 });

@@ -12,27 +12,25 @@
 </head>
 <body>
     <header>
-        <nav>
-	  <ul>
+        <div>
             <% if (user.profile_photo) { %>
-              <li><a href="/user/profile">
-                     <img src="<%= user.profile_photo %>" alt="Profile Photo" class="profile-image">Profile
-                  </a></li>
+                <a href="/user/profile">
+                    <img src="<%= user.profile_photo %>" alt="Profile Photo" class="profile-image">Profile
+                </a>
             <% } else { %>
-               <li><a href="http:/user/profile">
-                     <img src="/images/default-profile.png" alt="Profile Photo" class="profile-image">
-                   </a></li>
+                <a href="http:/user/profile">
+                    <img src="/images/default-profile.png" alt="Profile Photo" class="profile-image">
+                </a>
             <% } %>
             <div class="cart-icon">
-	      <li><a href="#cart">
-                    <img src="/images/cart-icon.png" alt="Cart" width="40" height="40">
-                    <span class="cart-count" id="cart-count"><%= cartItemCount %></span>
-	          </a></li>
+	      <a href="#cart">
+                <img src="/images/cart-icon.png" alt="Cart" width="40" height="40">
+                <span class="cart-count" id="cart-count"><%= cartItemCount %></span>
+	      </a>
             </div>
-            <li><a href="/user/logout">Logout</a></li>
-            <li><a href="/orders">My Orders</a></li>
-	  </ul>
-        </nav>
+            <a href="/user/logout">Logout</a>
+            <a href="/orders">My Orders</a>
+        </div>
     </header>
 
     <div class="container">
