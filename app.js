@@ -1,6 +1,7 @@
 const express = require('express');
 const session = require('express-session');
 const path = require('path');
+const { isAuthenticated, isAdmin } = require('./middleware/auth');
 
 const app = express();
 
@@ -31,6 +32,10 @@ app.use('/orders', orderRoutes);
 
 app.get('/', (req, res) => {
   res.redirect('/products');
+});
+
+app.get('/orders/admin', isAuthenticated, isAdmin, (req, res) => {
+   // Render admin view for orders
 });
 
 // Example query to test SQLite connection

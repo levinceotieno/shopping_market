@@ -1,0 +1,173 @@
+/* profile.css */
+
+body, ul, li, a {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    text-decoration: none;
+    color: inherit;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    padding-top: 60px; /* To avoid content being hidden behind the fixed header */
+}
+
+/* Header styles */
+.header-nav {
+    width: 100%;
+    background-color: #333;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    padding: 10px 0;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Navigation list styles */
+.nav-list {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Navigation item styles */
+.nav-list li {
+    display: flex;
+    align-items: center;
+}
+
+/* Link styles */
+.nav-list a {
+    color: #fff;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 10px 15px;
+    transition: color 0.3s ease;
+}
+
+/* Hover effect */
+.nav-list a:hover {
+    color: #ff6347;
+}
+
+/* Profile image styles */
+.profile-image {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+/* Cart icon styles */
+.cart-link {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.cart-image {
+    width: 30px;
+    height: 30px;
+    margin-right: 10px;
+}
+
+/* Cart count styles */
+.cart-count {
+    position: absolute;
+    top: 0;
+    right: 5px;
+    background-color: #ff6347;
+    color: #fff;
+    border-radius: 50%;
+    padding: 2px 6px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+/* Main container styles */
+.container {
+    padding-top: 80px; /* To avoid content being hidden behind the fixed header */
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+/* Profile wrapper styles */
+.profile-wrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+/* Profile image container styles */
+.profile-image-container {
+    flex: 0 0 150px;
+    margin-right: 20px;
+}
+
+/* Profile image styles */
+.profile-image {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+/* Profile details styles */
+.profile-details {
+    flex: 1;
+}
+
+/* Profile form styles */
+.profile-form .form-group,
+.change-password-form .form-group {
+    margin-bottom: 15px;
+}
+
+.profile-form label,
+.change-password-form label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.profile-form input,
+.profile-form select,
+.change-password-form input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+/* Button styles */
+.btn {
+    background-color: green;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn:hover {
+    background-color: darkgreen;
+}
+
+/* Back link styles */
+.back-link {
+    display: inline-block;
+    margin-bottom: 20px;
+    color: #007bff;
+    transition: color 0.3s ease;
+}
+
+.back-link:hover {
+    color: #0056b3;
+}

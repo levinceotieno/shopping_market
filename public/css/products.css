@@ -1,0 +1,195 @@
+/* products.css */
+.container {
+    width: 90%;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Product grid styles */
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 columns */
+    gap: 5px; /* Space between grid items */
+}
+
+/* Product item styles */
+.product-item {
+    width: 200px; /* Fixed width */
+    height: 350px; /* Fixed height */
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 15px;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Space out the content vertically */
+}
+
+/* Product title styles */
+.product-title {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 8px 0; /* Adjust margins for spacing */
+}
+
+/* Product price styles */
+.product-price {
+    font-size: 14px;
+    color: #888;
+    margin-bottom: 8px;
+    margin: 8px 0; /* Adjust margins for spacing */
+}
+
+/* Product description styles */
+.product-description {
+    font-size: 10px;
+    margin-bottom: 8px;
+    margin: 8px 0; /* Adjust margins for spacing */
+}
+
+/* Product status styles */
+.product-status {
+    font-size: 10px;
+    margin-bottom: 8px;
+    margin: 8px 0;
+    color: green;
+}
+
+/* Product image styles */
+.product-image {
+    width: 100%;
+    height: 150px; /* fixed height */
+    object-fit: cover; /* Ensure the image covers the area without distortion */
+    border-radius: 5px;
+    margin-bottom: 10px;
+}
+
+/* Button styles */
+.btn {
+    background-color: green;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    align-self: center; /* Center the button horizontally */
+}
+
+.btn:hover {
+    background-color: darkgreen;
+}
+
+/* Cart styles */
+#cart {
+    margin-top: 30px;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+
+/* Cart item styles */
+#cart-items {
+    list-style-type: none;
+    padding: 0;
+}
+
+#cart-items li {
+    margin-bottom: 10px;
+}
+
+/* Cart total styles */
+#cart-total {
+    font-weight: bold;
+}
+
+/* General resests and styles */
+
+body, ul, li, a {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    text-decoration: none;
+    color: inherit;
+}
+
+/* Header styles */
+.header-nav {
+    width: 100%;
+    background-color: #333;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    padding: 10px 0;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Navigation list styles */
+.nav-list {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Navigation item styles */
+.nav-list li {
+    display: flex;
+    align-items: center;
+}
+
+/* Link styles */
+.nav-list a {
+    color: #fff;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 10px 15px;
+    transition: color 0.3s ease;
+}
+
+/* Hover effect */
+.nav-list a:hover {
+    color: #ff6347;
+}
+
+/* Profile image styles */
+.profile-image {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+/* Cart icon styles */
+.cart-link {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.cart-image {
+    width: 30px;
+    height: 30px;
+    margin-right: 10px;
+}
+
+/* Cart count styles */
+.cart-count {
+    position: absolute;
+    top: 0;
+    right: 5px;
+    background-color: #ff6347;
+    color: #fff;
+    border-radius: 50%;
+    padding: 2px 6px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+body {
+    padding-top: 60px; /* To avoid content being hidden behind the fixed header */
+}

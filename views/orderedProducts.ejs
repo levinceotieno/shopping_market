@@ -1,0 +1,58 @@
+<!-- views/orderedProducts.ejs -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ordered Products</title>
+    <link rel="stylesheet" href="/css/orderedProducts.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Ordered Products</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>User ID</th>
+                    <th>Name</th>
+                    <th>Products</th>
+                    <th>Total Price</th>
+                    <th>Address</th>
+                    <th>Pickup Point</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% orders.forEach(order => { %>
+                    <tr>
+                        <td><%= order.userId %></td>
+                        <td><%= order.userName %></td>
+                        <td>
+                            <ul>
+                                <% order.products.forEach(product => { %>
+                                    <li><%= product.name %> (x<%= product.quantity %>)</li>
+                                <% }) %>
+                            </ul>
+                        </td>
+                        <td>Ksh. <%= order.totalPrice %></td>
+                        <td><%= order.address %></td>
+                        <td><%= order.pickupPoint %></td>
+                        <td><%= order.status %></td>
+                        <td>
+                            <form action="/orders/update/<%= order.id %>" method="post">
+                                <select name="status">
+                                    <option value="processing" <%= order.status === 'processing' ? 'selected' : '' %>>Processing</option>
+                                    <option value="shipped" <%= order.status === 'shipped' ? 'selected' : '' %>>Shipped</option>
+                                    <option value="delivered" <%= order.status === 'delivered' ? 'selected' : '' %>>Delivered</option>
+                                </select>
+                                <button type="submit">Update</button>
+                            </form>
+                        </td>
+                    </tr>
+                <% }) %>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

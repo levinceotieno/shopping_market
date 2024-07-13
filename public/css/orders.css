@@ -1,0 +1,178 @@
+/* orders.css */
+
+body, ul, li, a, button {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    text-decoration: none;
+    color: inherit;
+    font-family: Arial, sans-serif;
+}
+
+/* Header styles */
+.header-nav {
+    width: 100%;
+    background-color: #333;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    padding: 10px 0;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Navigation list styles */
+.nav-list {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* Navigation item styles */
+.nav-list li {
+    display: flex;
+    align-items: center;
+}
+
+/* Link styles */
+.nav-list a {
+    color: #fff;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 10px 15px;
+    transition: color 0.3s ease;
+}
+
+/* Hover effect */
+.nav-list a:hover {
+    color: #ff6347;
+}
+
+/* Profile image styles */
+.profile-image {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+/* Cart icon styles */
+.cart-link {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.cart-image {
+    width: 30px;
+    height: 30px;
+    margin-right: 10px;
+}
+
+/* Cart count styles */
+.cart-count {
+    position: absolute;
+    top: 0;
+    right: 5px;
+    background-color: #ff6347;
+    color: #fff;
+    border-radius: 50%;
+    padding: 2px 6px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+/* Main container styles */
+.container {
+    padding-top: 80px; /* To avoid content being hidden behind the fixed header */
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+/* Back link styles */
+.back-link {
+    display: inline-block;
+    margin-bottom: 20px;
+    color: #007bff;
+    transition: color 0.3s ease;
+}
+
+.back-link:hover {
+    color: #0056b3;
+}
+
+/* Button styles */
+.btn {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.btn:hover {
+    background-color: #0056b3;
+}
+
+/* Order styles */
+.order {
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.order h2 {
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+.order p {
+    margin-bottom: 10px;
+}
+
+.order h3 {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+/* Product list styles */
+.product-list {
+    list-style: none;
+    padding-left: 0;
+}
+
+.product-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.product-image {
+    width: 50px;
+    height: 50px;
+    border-radius: 5px;
+    margin-right: 10px;
+    object-fit: cover;
+}
+
+.product-name {
+    font-weight: bold;
+}
+
+.product-quantity {
+    margin-left: 5px;
+}
+
+/* Clear history button styles */
+.clear-history-btn {
+    background-color: #dc3545;
+}
+
+.clear-history-btn:hover {
+    background-color: #c82333;
+}

@@ -39,6 +39,7 @@ db.serialize(() => {
     address TEXT,
     pickup_point TEXT,
     delivery_date TEXT,
+    status TEXT DEFAULT 'pending',
     FOREIGN KEY(user_id) REFERENCES users(id)
   )`);
 
