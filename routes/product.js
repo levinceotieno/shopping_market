@@ -48,7 +48,14 @@ router.get('/', (req, res) => {
 
 // Render add product page
 router.get('/add', isAdmin, (req, res) => {
-  res.render('addProduct');
+  db.all('SELECT * FROM products', [], (err, products) => {
+    if (err) {
+       console.error(err);
+       res.status(500).send('Error retrieving products');
+    } else {
+       res.render('addProduct', { products });
+    }
+  });
 });
 
 // Add a new product
@@ -65,6 +72,32 @@ router.post('/add', isAdmin, upload.single('image'), (req, res) => {
       res.redirect('/products');
     }
   );
+});
+
+/**
+// Render addProduct.ejs with products
+router.get('/add', (req, res) => {
+  db.all('SELECT * FROM products', [], (err, products) => {
+    if (err) {
+	console.error(err);
+	res.status(500).send('Error retrieving products');
+    } else {
+	res.render('addProduct', { products });
+    }
+  });
+});
+**/
+
+// Remove product route
+router.delete('/remove/:id', (req, res) => {
+  const productId = req.params.id;
+
+  db.run('DELETE FROM products WHERE id = ?', [productId], function(err) {
+    if (err) {
+	return res.status(500).json({ success: false, message: 'Failed to remove product' });
+    }
+    res.json({ success: true, message: 'Product removed successfully' });
+  });
 });
 
 module.exports = router;
