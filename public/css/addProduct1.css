@@ -1,5 +1,4 @@
 /* addProduct.css */
-
 body {
     padding-top: 60px; /* To avoid content being hidden behind the fixed header */
 }
@@ -53,8 +52,7 @@ body {
     padding: 5px;
 }
 
-.submit-button,
-.remove-button {
+.submit-button {
     padding: 10px 20px;
     border: none;
     border-radius: 5px;
@@ -62,12 +60,9 @@ body {
     color: #fff;
     font-size: 1em;
     cursor: pointer;
-    display: block;
-    margin: 0 auto; /* Center the button */
 }
 
-.submit-button:hover,
-.remove-button:hover {
+.submit-button:hover {
     background-color: #218838;
 }
 
@@ -109,28 +104,4 @@ body {
 /* Hover effect */
 .nav-list a:hover {
     color: #ff6347;
-}
-
-.product-list {
-    display: flex;
-    flex-wrap: wrap;
-    grid-template-columns: repeat(1, 1fr); /* 1 columns */
-    justify-content: center; /* Center the product items */
-    gap: 20px; /* Add space between product items */
-}
-
-.product-item {
-    border: 1px solid #ccc;
-    border-radius: 10px;
-    padding: 15px;
-    width: 200px; /* Fixed width for each product item */
-    text-align: center;
-    background-color: #fff;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-.product-image {
-    max-width: 100%;
-    height: auto; /* Make the image fit within the box */
-    border-radius: 5px;
 }
