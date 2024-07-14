@@ -4,18 +4,24 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register</title>
-    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="/css/register.css">
 </head>
 <body>
     <div class="container">
-        <h1>Register</h1>
-        <form action="/user/register" method="POST">
+        <div class="header">
+            <h2>Shopping Market</h2>
+            <p>Your one and only source for a variety of products!</p>
+        </div>
+        <form action="/user/register" method="POST" class="register-form">
             <input type="text" name="username" placeholder="Username" required>
             <input type="email" name="email" placeholder="Email" required>
             <input type="password" name="password" placeholder="Password" required>
             <button type="submit">Register</button>
         </form>
-        <p>Already have an account? <a href="/user/login">Login</a></p>
+        <p class="login-link">Already have an account? <a href="/user/login">Login</a></p>
     </div>
+    <footer>
+        <p>&copy; 2024 Shopping Market. All rights reserved. Authors: Susan Kimemia & Levince Otieno. Contact: <a href="mailto:shopping_market@gmail.com">shopping_market@gmail.com</a></p>
+    </footer>
 </body>
 </html>
