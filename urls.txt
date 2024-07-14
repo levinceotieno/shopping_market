@@ -3,5 +3,5 @@ http://localhost:3000/products/add --> Admin add & remove products
 http://localhost:3000/user/login --> login user
 http://localhost:3000/user/register --> register user
 http://localhost:3000/user/profile --> user profile page
-http://localhost:3000/user/order --> user's orders list
+http://localhost:3000/orders --> user's orders list
 http://localhost:3000/orders/admin --> Admin updates placed orders
