@@ -2,48 +2,87 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add Product</title>
     <link rel="stylesheet" href="/css/addProduct.css">
 </head>
-<header>
-  <nav class="header-nav">
-    <ul class="nav-list">
-       <li><a href="/products" class="back-link">Products</a>
-       </a></li>
-       <li><a href="/user/logout">Logout</a></li>
-    </ul>
-  </nav>
-</header>
 <body>
+    <header>
+      <nav class="header-nav">
+        <ul class="nav-list">
+          <li><a href="/products">Products</a></li>
+	  <li><a href="/user/logout">Logout</a></li>
+        </ul>
+      </nav>
+    </header>
     <div class="container">
         <h1 class="title">Add Product</h1>
         <form class="add-product-form" action="/products/add" method="post" enctype="multipart/form-data">
             <div class="form-group">
-                <label for="name" class="form-label">Name:</label>
-                <input type="text" id="name" name="name" class="form-input" required>
+                <label class="form-label" for="name">Name:</label>
+                <input class="form-input" type="text" id="name" name="name" required>
             </div>
+
             <div class="form-group">
-                <label for="price" class="form-label">Price:</label>
-                <input type="number" id="price" name="price" step="0.01" class="form-input" required>
+                <label class="form-label" for="price">Price:</label>
+                <input class="form-input" type="number" id="price" name="price" required>
             </div>
+
             <div class="form-group">
-                <label for="description" class="form-label">Description:</label>
-                <textarea id="description" name="description" class="form-textarea" required></textarea>
+                <label class="form-label" for="description">Description:</label>
+                <textarea class="form-textarea" id="description" name="description" required></textarea>
             </div>
+
             <div class="form-group">
-                <label for="status" class="form-label">Status:</label>
-                <select id="status" name="productStatus" class="form-select" required>
+                <label class="form-label" for="image">Image:</label>
+                <input class="form-input-file" type="file" id="image" name="image" accept="image/*" required>
+            </div>
+
+            <div class="form-group">
+                <label class="form-label" for="productStatus">Status:</label>
+                <select class="form-select" id="productStatus" name="productStatus" required>
                     <option value="available">Available</option>
-                    <option value="out of stock">Out of Stock</option>
+                    <option value="unavailable">Unavailable</option>
                 </select>
             </div>
-            <div class="form-group">
-                <label for="image" class="form-label">Image:</label>
-                <input type="file" id="image" name="image" accept="image/*" class="form-input-file" required>
-            </div>
-            <button type="submit" class="submit-button">Add Product</button>
+
+            <button class="submit-button" type="submit">Add Product</button>
         </form>
+
+        <h2 class="title">Manage Products</h2>
+        <div class="product-list">
+            <% products.forEach(product => { %>
+                <div class="product-item">
+                    <img src="<%= product.image_url %>" alt="<%= product.name %>" class="product-image">
+                    <h2><%= product.name %></h2>
+                    <p><%= product.description %></p>
+                    <p>Ksh. <%= product.price %></p>
+                    <p>Status: <%= product.status %></p>
+                    <form action="/products/remove/<%= product.id %>" method="post" class="delete-form">
+                        <input type="hidden" name="_method" value="delete">
+                        <button type="submit" class="remove-button">Remove</button>
+                    </form>
+                </div>
+            <% }); %>
+        </div>
     </div>
+
+    <script>
+        // Ensure delete forms send DELETE requests
+        document.querySelectorAll('.delete-form').forEach(form => {
+            form.addEventListener('submit', function(event) {
+                event.preventDefault();
+                fetch(this.action, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                }).then(response => {
+                    if (response.ok) {
+                        location.reload();
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>

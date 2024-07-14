@@ -8,6 +8,10 @@
     <link rel="stylesheet" href="/css/orderedProducts.css">
 </head>
 <body>
+    <header>                                                                                               <nav class="header-nav">                                                                               <ul class="nav-list">                                                                                  <li><a href="/products">Products</a></li>
+          <li><a href="/user/logout">Logout</a></li>                                                         </ul>
+      </nav>
+    </header>
     <div class="container">
         <h1>Ordered Products</h1>
         <table>
@@ -42,9 +46,9 @@
                         <td>
                             <form action="/orders/update/<%= order.id %>" method="post">
                                 <select name="status">
-                                    <option value="processing" <%= order.status === 'processing' ? 'selected' : '' %>>Processing</option>
-                                    <option value="shipped" <%= order.status === 'shipped' ? 'selected' : '' %>>Shipped</option>
-                                    <option value="delivered" <%= order.status === 'delivered' ? 'selected' : '' %>>Delivered</option>
+                                    <option value="Processing" <%= order.status === 'processing' ? 'selected' : '' %>>Processing</option>
+                                    <option value="Shipped" <%= order.status === 'shipped' ? 'selected' : '' %>>Shipped</option>
+                                    <option value="Delivered" <%= order.status === 'delivered' ? 'selected' : '' %>>Delivered</option>
                                 </select>
                                 <button type="submit">Update</button>
                             </form>
