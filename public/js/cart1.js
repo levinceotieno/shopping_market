@@ -2,23 +2,23 @@
 let cart = [];
 
 function showToast(message, type = 'info') {
-    const toast = document.createElement('div');
-    toast.className = `toast ${type}`;
-    toast.textContent = message;
+   const toast = document.createElement('div');
+   toast.className = `toast ${type}`;
+   toast.textContent = message;
 
-    const toastContainer = document.getElementById('toast');
-    toastContainer.appendChild(toast);
+   const toastContainer = document.getElementById('toast');
+   toastContainer.appendChild(toast);
 
-    // Trigger reflow
-    toast.offsetHeight;
-    toast.classList.add('show');
+   // Trigger reflow
+   toast.offsetHeight;
+   toast.classList.add('show');
 
-    setTimeout(() => {
-        toast.classList.remove('show');
-        setTimeout(() => {
-            toastContainer.removeChild(toast);
-        }, 300);
-    }, 3000);
+   setTimeout(() => {
+      toast.classList.remove('show');
+      setTimeout(() => {
+         toastContainer.removeChild(toast);
+      }, 300);
+   }, 3000);
 }
 
 function addToCart(id, name, price, imageUrl) {
@@ -29,13 +29,11 @@ function addToCart(id, name, price, imageUrl) {
         cart.push({ id, name, price, imageUrl, quantity: 1 });
     }
     updateCartDisplay();
-    showToast(`${name} added to cart`, 'success');
 }
 
 function removeFromCart(id) {
     cart = cart.filter(item => item.id !== id);
     updateCartDisplay();
-    showToast('Item removed from cart', 'info');
 }
 
 function updateCartDisplay() {
@@ -50,34 +48,31 @@ function updateCartDisplay() {
     cart.forEach(item => {
         const li = document.createElement('li');
         li.innerHTML = `
-            <img src="${item.imageUrl}" alt="${item.name}" class="cart-image">
-            ${item.name} - Ksh. ${item.price} x ${item.quantity}
+            <img src="${item.imageUrl}" alt="${item.name}" class="cart-image"> 
+            ${item.name} - $${item.price} x ${item.quantity} 
             <button onclick="removeFromCart('${item.id}')">Remove</button>
         `;
         cartList.appendChild(li);
         total += item.price * item.quantity;
-        itemCount += item.quantity;
+	itemCount += item.quantity;
     });
 
     cartTotal.textContent = total.toFixed(2);
     cartCount.textContent = itemCount;
 }
 
-function openModal() {
-    document.getElementById('deliveryModal').style.display = 'block';
-}
+function checkout() {
+    if (cart.length === 0) {
+        showToast('Your cart is empty!');
+        return;
+    }
 
-function closeModal() {
-    document.getElementById('deliveryModal').style.display = 'none';
-}
-
-function submitDeliveryInfo() {
-    const address = document.getElementById('address').value;
-    const pickupPoint = document.getElementById('pickupPoint').value;
-    const isNairobi = document.querySelector('input[name="isNairobi"]:checked').value === 'yes';
+    const address = prompt('Enter your delivery address:');
+    const pickupPoint = prompt('Enter your pickup point:');
+    const isNairobi = confirm('Is the delivery within Nairobi?');
 
     if (!address || !pickupPoint) {
-        showToast('Address and pickup point are required!', 'error');
+        showToast('Address and pickup point are required!');
         return;
     }
 
@@ -105,23 +100,14 @@ function submitDeliveryInfo() {
     })
     .then(response => response.json())
     .then(data => {
-        showToast('Order placed successfully!', 'success');
+        showToast('Order placed successfully!');
         cart = [];
         updateCartDisplay();
-        closeModal();
     })
     .catch((error) => {
         console.error('Error:', error);
-        showToast('Login or Register to order.', 'error');
+        showToast('Login or Register to order.');
     });
-}
-
-function checkout() {
-    if (cart.length === 0) {
-        showToast('Your cart is empty!', 'error');
-        return;
-    }
-    openModal();
 }
 
 function clearOrderHistory() {
@@ -130,12 +116,12 @@ function clearOrderHistory() {
     })
     .then(response => response.json())
     .then(data => {
-        showToast('Order history cleared successfully!', 'success');
+        showToast('Order history cleared successfully!');
         // Additional code to update the UI can be added here
     })
     .catch((error) => {
         console.error('Error:', error);
-        showToast('An error occurred while clearing order history.', 'error');
+        showToast('An error occurred while clearing order history.');
     });
 }
 
@@ -143,9 +129,9 @@ function calculateDeliveryTime(address) {
     const isNairobi = address.toLowerCase().includes('nairobi');
     const deliveryTime = new Date();
     if (isNairobi) {
-        deliveryTime.setHours(deliveryTime.getHours() + 6);
+	deliveryTime.setHours(deliveryTime.getHours() + 6);
     } else {
-        deliveryTime.setDate(deliveryTime.getDate() + 3);
+      deliveryTime.setDate(deliveryTime.getDate() + 3);
     }
     return deliveryTime.toLocaleString();
 }
@@ -154,6 +140,3 @@ function toggleCart() {
     const cartElement = document.getElementById('cart');
     cartElement.style.display = cartElement.style.display === 'none' ? 'block' : 'none';
 }
-
-// Initial cart display update
-updateCartDisplay();

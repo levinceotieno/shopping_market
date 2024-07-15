@@ -29,13 +29,11 @@ function addToCart(id, name, price, imageUrl) {
         cart.push({ id, name, price, imageUrl, quantity: 1 });
     }
     updateCartDisplay();
-    showToast(`${name} added to cart`, 'success');
 }
 
 function removeFromCart(id) {
     cart = cart.filter(item => item.id !== id);
     updateCartDisplay();
-    showToast('Item removed from cart', 'info');
 }
 
 function updateCartDisplay() {
@@ -74,10 +72,10 @@ function closeModal() {
 function submitDeliveryInfo() {
     const address = document.getElementById('address').value;
     const pickupPoint = document.getElementById('pickupPoint').value;
-    const isNairobi = document.querySelector('input[name="isNairobi"]:checked').value === 'yes';
+    const isNairobi = document.getElementById('isNairobi').checked;
 
     if (!address || !pickupPoint) {
-        showToast('Address and pickup point are required!', 'error');
+        showToast('Address and pickup point are required!');
         return;
     }
 
@@ -105,20 +103,20 @@ function submitDeliveryInfo() {
     })
     .then(response => response.json())
     .then(data => {
-        showToast('Order placed successfully!', 'success');
+        showToast('Order placed successfully!');
         cart = [];
         updateCartDisplay();
         closeModal();
     })
     .catch((error) => {
         console.error('Error:', error);
-        showToast('Login or Register to order.', 'error');
+        showToast('Login or Register to order.');
     });
 }
 
 function checkout() {
     if (cart.length === 0) {
-        showToast('Your cart is empty!', 'error');
+        showToast('Your cart is empty!');
         return;
     }
     openModal();
@@ -130,12 +128,12 @@ function clearOrderHistory() {
     })
     .then(response => response.json())
     .then(data => {
-        showToast('Order history cleared successfully!', 'success');
+        showToast('Order history cleared successfully!');
         // Additional code to update the UI can be added here
     })
     .catch((error) => {
         console.error('Error:', error);
-        showToast('An error occurred while clearing order history.', 'error');
+        showToast('An error occurred while clearing order history.');
     });
 }
 
@@ -154,6 +152,3 @@ function toggleCart() {
     const cartElement = document.getElementById('cart');
     cartElement.style.display = cartElement.style.display === 'none' ? 'block' : 'none';
 }
-
-// Initial cart display update
-updateCartDisplay();
