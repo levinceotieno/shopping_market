@@ -19,30 +19,31 @@ const upload = multer({ storage: storage });
 
 // Get all products
 router.get('/', (req, res) => {
-  if (!req.session.userId) {
-    return res.redirect('/user/login');
-  }
 
   db.all('SELECT * FROM products', (err, products) => {
     if (err) {
       return res.status(500).send(err);
     }
 
-    db.get('SELECT * FROM users WHERE id = ?', [req.session.userId], (err, user) => {
-      if (err) {
-        return res.status(500).send(err);
-      }
-
-      // Get the cart item count for the user
-      db.get('SELECT COUNT(*) as count FROM cart WHERE user_id = ?', [req.session.userId], (err, result) => {
+    if (req.session.userId) {
+      db.get('SELECT * FROM users WHERE id = ?', [req.session.userId], (err, user) => {
         if (err) {
           return res.status(500).send(err);
-        }
+	}
 
-        const cartItemCount = result.count;
-        res.render('products', { products, user, cartItemCount });
+        // Get the cart item count for the user
+        db.get('SELECT COUNT(*) as count FROM cart WHERE user_id = ?', [req.session.userId], (err, result) => {
+          if (err) {
+            return res.status(500).send(err);
+	  }
+
+          const cartItemCount = result.count;
+	  res.render('products', { products, user, cartItemCount, isAuthenticated: true });
+	});
       });
-    });
+    } else {
+	  res.render('products', { products, user: null, cartItemCount: 0, isAuthenticated: false });
+    }
   });
 });
 
@@ -73,20 +74,6 @@ router.post('/add', isAdmin, upload.single('image'), (req, res) => {
     }
   );
 });
-
-/**
-// Render addProduct.ejs with products
-router.get('/add', (req, res) => {
-  db.all('SELECT * FROM products', [], (err, products) => {
-    if (err) {
-	console.error(err);
-	res.status(500).send('Error retrieving products');
-    } else {
-	res.render('addProduct', { products });
-    }
-  });
-});
-**/
 
 // Remove product route
 router.delete('/remove/:id', (req, res) => {

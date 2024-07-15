@@ -106,7 +106,7 @@ function checkout() {
     })
     .catch((error) => {
         console.error('Error:', error);
-        showToast('An error occurred while placing the order.');
+        showToast('Login or Register to order.');
     });
 }
 

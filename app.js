@@ -30,7 +30,7 @@ const orderRoutes = require('./routes/order');
 
 app.use('/user', userRoutes);
 app.use('/products', productRoutes);
-app.use('/orders', orderRoutes);
+app.use('/orders', isAuthenticated, orderRoutes);
 
 app.get('/', (req, res) => {
   res.redirect('/products');
