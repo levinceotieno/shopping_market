@@ -9,8 +9,25 @@ router.post('/', isAuthenticated, (req, res) => {
     const { products, totalPrice, address, pickupPoint } = req.body;
     const userId = req.session.userId;
 
-    db.run(`INSERT INTO orders (user_id, total_price, address, pickup_point) VALUES (?, ?, ?, ?)`,
-        [userId, totalPrice, address, pickupPoint],
+    const isNairobi = address.toLowerCase().includes('nairobi');
+    const deliveryDate = new Date();
+    if (isNairobi) {
+	deliveryDate.setHours(deliveryDate.getHours() + 6);
+    } else {
+	const day = deliveryDate.getDay();
+	// If order is placed on Friday, add 5 days to skip the weekend
+	if (day === 5) {
+	   deliveryDate.setDate(deliveryDate.getDate() + 5);
+	} else if (day === 6) {
+	       // If order is placed on Saturday, add 4 days
+	       deliveryDate.setDate(deliveryDate.getDate() + 4);
+	} else {
+	    deliveryDate.setDate(deliveryDate.getDate() + 3);
+	}
+    }
+
+    db.run(`INSERT INTO orders (user_id, total_price, address, pickup_point, delivery_date) VALUES (?, ?, ?, ?, ?)`,
+        [userId, totalPrice, address, pickupPoint, deliveryDate.toISOString()],
         function(err) {
             if (err) {
                 return res.status(400).send(err);
@@ -39,7 +56,7 @@ router.post('/', isAuthenticated, (req, res) => {
 router.get('/', isAuthenticated, (req, res) => {
     const userId = req.session.userId;
     db.all(`
-        SELECT o.id, o.total_price, o.address, o.pickup_point, o.status, op.product_id, op.quantity, p.name, p.image_url
+        SELECT o.id, o.total_price, o.address, o.pickup_point, o.status, o.delivery_date, op.product_id, op.quantity, p.name, p.image_url
         FROM orders o
         JOIN order_products op ON o.id = op.order_id
         JOIN products p ON op.product_id = p.id
@@ -58,6 +75,7 @@ router.get('/', isAuthenticated, (req, res) => {
                     address: row.address,
                     pickupPoint: row.pickup_point,
                     status: row.status,
+		    deliveryDate: row.delivery_date,
                     products: []
                 };
             }
