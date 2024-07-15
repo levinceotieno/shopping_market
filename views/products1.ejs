@@ -4,40 +4,40 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Products</title>
-    <link rel="stylesheet" href="/css/products.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="stylesheet" href="/css/products.css"> <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600&family=Open+Sans&display=swap" rel="stylesheet">
+
 </head>
-<body>
+<body>  
     <header>
       <nav class="header-nav">
         <ul class="nav-list">
-            <% if (isAuthenticated) { %>
+            <% if (user.profile_photo) { %>
                 <li><a href="/user/profile">
                     <img src="<%= user.profile_photo %>" alt="Profile Photo" class="profile-image"> Profile
                 </a></li>
-                <li><a href="#cart" class="cart-link">
-                    <img src="/images/cart-icon.png" alt="Cart" class="cart-image">
-                    <span class="cart-count" id="cart-count"><%= cartItemCount %></span> Cart
-                </a></li>
-                <li><a href="/orders">My Orders</a></li>
-                <li><a href="/user/logout">Logout</a></li>
             <% } else { %>
-		<h1>SHOPPING MARKET</h1>
-                <li><a href="/user/login">Login</a></li>
-                <li><a href="/user/register">Register</a></li>
+                <li><a href="/user/profile">
+                    <img src="/images/default-profile.png" alt="Profile Photo" class="profile-image"> Profile
+                </a></li>
             <% } %>
+            <li><a href="#cart" class="cart-link">
+                <img src="/images/cart-icon.png" alt="Cart" class="cart-image">
+                <span class="cart-count" id="cart-count"><%= cartItemCount %></span> Cart
+            </a></li>
+            <li><a href="/orders">My Orders</a></li>
+            <li><a href="/user/logout">Logout</a></li>
         </ul>
       </nav>
     </header>
 
     <div class="container">
-      <h2>Products</h2>
+      <h1>Products</h1>
       <div class="product-grid">
          <% products.forEach(product => { %>
             <div class="product-item">
-                <img class="product-image" src="<%= product.image_url %>" alt="<%= product.name %>">
+		<img class="product-image" src="<%= product.image_url %>" alt="<%= product.name %>">
                 <h3 class="product-title"><%= product.name %></h3>
                 <p class="product-price">Ksh. <%= product.price %></p>
                 <p class="product-description"><%= product.description %></p>
@@ -49,12 +49,13 @@
     </div>
 
     <div id="cart">
-     <div id="toast"></div>
       <h2 class="h2">Cart</h2>
       <ul id="cart-items"></ul>
       <p>Total: Ksh. <span id="cart-total">0</span></p>
       <button class="btn check-out" onclick="checkout()">Checkout</button>
     </div>
+
+    <div id="toast"></div>
 
     <script src="/js/cart.js"></script>
 </body>

@@ -70,7 +70,7 @@ router.get('/logout', (req, res) => {
       return res.redirect('/');
     }
     res.clearCookie('connect.sid');
-    res.redirect('/user/login');
+    res.redirect('/');
   });
 });
 
