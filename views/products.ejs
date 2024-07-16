@@ -33,7 +33,15 @@
     </header>
 
     <div class="container">
+     <div class="products-header">
       <h2>Products</h2>
+      <div class="admin-links">
+      <% if (isAdmin) { %>
+	<a href="/orders/admin">Update Placed Orders</a>
+	<a href="/products/add">Add Products</a>
+      <% } %>
+      </div>
+     </div>
       <div class="product-grid">
          <% products.forEach(product => { %>
             <div class="product-item">
@@ -71,11 +79,14 @@
 
     <div id="cart">
      <div id="toast"></div>
-      <h2 class="h2">Your Cart</h2>
+      <h2 class="h2">My Cart</h2>
       <ul id="cart-items"></ul>
       <p>Total: Ksh. <span id="cart-total">0</span></p>
       <button class="btn check-out" onclick="checkout()">Checkout</button>
     </div>
+    <footer>
+       <p>&copy; 2024 Shopping Market. All rights reserved. Authors: Susan Kimemia & Levince Otieno. Contact: <a href="mailto:shopping_market@gmail.com">shopping_market@gmail.com</a></p>
+    </footer>
 
     <script src="/js/cart.js"></script>
 </body>

@@ -81,3 +81,8 @@ footer a {
 footer a:hover {
     text-decoration: underline;
 }
+
+.back-links {                                                                                            display: flex;                                                                                       gap: 18px; /* Add space between links */                                                         }
+                                                                                                     .back-links a {                                                                                          text-decoration: none;                                                                               color: green; /* Customize link color */                                                             padding: 5px 10px; /* Add padding if needed */                                                       /* border: 1px solid green; */ /* Optional: Add border */                                            border-radius: 5px; /* Optional: Add border-radius */                                            }                                                                                                    
+												     .back-links a:hover {                                                                                    color: darkgreen; /* Change text color on hover */
+												     }
