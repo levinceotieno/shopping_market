@@ -118,7 +118,7 @@ body, ul, li, a {
 /* Header styles */
 .header-nav {
     width: 100%;
-    background-color: #333;
+    background-color: #003300;
     position: fixed;
     top: 0;
     left: 0;
@@ -153,7 +153,7 @@ body, ul, li, a {
 
 /* Hover effect */
 .nav-list a:hover {
-    color: #ff6347;
+    color: darkgreen;
 }
 
 a {
@@ -215,7 +215,7 @@ h2 {
 }
 
 body {
-    padding-top: 60px; /* To avoid content being hidden behind the fixed header */
+    padding-top: 80px; /* To avoid content being hidden behind the fixed header */
 }
 
 /* Modal style */
@@ -293,4 +293,44 @@ body {
 
 .modal button:hover {
     background-color: darkgreen;
+}
+
+.products-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px; /* Add margin if needed */
+}
+
+.products-header h2 {
+    margin: 0;
+}
+
+.admin-links {
+    display: flex;
+    gap: 22px; /* Add space between links */
+    font-size: 14px;
+}
+
+.admin-links a {
+    text-decoration: underline;
+    color: green; /* Customize link color */
+    padding: 5px 10px; /* Add padding if needed */
+    /* border: 1px solid green; */ /* Optional: Add border */
+    border-radius: 5px; /* Optional: Add border-radius */
+    /* box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2); */
+}
+
+.admin-links a:hover {
+    background-color: darkgreen; /* Change background color on hover */
+    color: white; /* Change text color on hover */
+}
+
+footer {
+    text-align: center;                                                                                  margin-top: 20px;                                                                                    font-size: 0.7em;                                                                                    color: #888888;                                                                                  }                                                                                                                                                                                                         footer a {                                                                                               color: #28a745;
+    text-decoration: none;
+}
+
+footer a:hover {
+    text-decoration: underline;
 }

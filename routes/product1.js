@@ -38,11 +38,11 @@ router.get('/', (req, res) => {
 	  }
 
           const cartItemCount = result.count;
-	  res.render('products', { products, user, cartItemCount, isAuthenticated: true, isAdmin: req.session.isAdmin });
+	  res.render('products', { products, user, cartItemCount, isAuthenticated: true });
 	});
       });
     } else {
-	  res.render('products', { products, user: null, cartItemCount: 0, isAuthenticated: false, isAdmin: false });
+	  res.render('products', { products, user: null, cartItemCount: 0, isAuthenticated: false });
     }
   });
 });
