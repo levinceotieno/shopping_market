@@ -1,5 +1,10 @@
 //database.js
 const sqlite3 = require('sqlite3').verbose();
+const path = require('path');
+
+const dbPath = process.env.NODE_ENV === 'production'
+  ? path.resolve('/tmp', 'shopping_market.db')
+  : path.resolve(__dirname, 'shopping_market.db');
 
 const db = new sqlite3.Database('./shopping_market.db', (err) => {
   if (err) {

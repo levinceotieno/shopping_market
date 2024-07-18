@@ -15,7 +15,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(methodOverride('_method'));
 app.use(session({
-  secret: '346bdc2807207b7d90d6b5df9d1554d8561233c1ba0fef1cdb00052ef5da5ab700ce8c1a743126dbd7f37725dfb62002e5a0ba02955a421c99ec47325ae9f9c7',
+  secret: process.env.SESSION_SECRET || '346bdc2807207b7d90d6b5df9d1554d8561233c1ba0fef1cdb00052ef5da5ab700ce8c1a743126dbd7f37725dfb62002e5a0ba02955a421c99ec47325ae9f9c7',
   resave: false,
   saveUninitialized: true
 }));
