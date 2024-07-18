@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const bcrypt = require('bcryptjs');
+const { getDb } = require('../database');
+//const bcrypt = require('bcryptjs');
 const db = require('../database');
 const multer = require('multer');
 const path = require('path');
@@ -27,6 +28,7 @@ router.post('/register', async (req, res) => {
     const { username, email, password } = req.body;
     const hashedPassword = await bcrypt.hash(password, 10);
 
+    const db = getDb();
     db.run(`INSERT INTO users (username, email, password) VALUES (?, ?, ?)`,
       [username, email, hashedPassword],
       (err) => {
@@ -35,6 +37,7 @@ router.post('/register', async (req, res) => {
           return res.status(400).send(err);
         }
 	const { email, password } = req.body;
+	const db = getDb();
 	db.get('SELECT * FROM users WHERE email = ?', [email], async (err, user) => {
 	   if (err) {
 	      return res.status(400).send(err);
@@ -64,6 +67,7 @@ router.get('/login', (req, res) => {
 // Log in a user
 router.post('/login', (req, res) => {
   const { email, password } = req.body;
+  const db = getDb();
   db.get('SELECT * FROM users WHERE email = ?', [email], async (err, user) => {
     if (err) {
       return res.status(400).send(err);
@@ -94,11 +98,13 @@ router.get('/profile', (req, res) => {
   if (!req.session.userId) {
     return res.redirect('/user/login');
   }
+  const db = getDb();
   db.get('SELECT * FROM users WHERE id = ?', [req.session.userId], (err, user) => {
     if (err) {
       return res.status(400).send(err);
     }
     // Fetch cart item count for the user
+    const db = getDb();
     db.get('SELECT COUNT(*) as count FROM cart WHERE user_id = ?', [req.session.userId], (err, result) => {
       if (err) {
         console.error("Error fetching cart item count:", err);
@@ -127,7 +133,7 @@ router.post('/profile', upload.single('profilePhoto'), (req, res) => {
     WHERE id = ?
   `;
   const params = [username, email, address, phone, gender, profilePhoto, req.session.userId];
-
+  const db = getDb();
   db.run(query, params, (err) => {
     if (err) {
       return res.status(400).send(err);
@@ -142,12 +148,14 @@ router.post('/change-password', async (req, res) => {
     return res.redirect('/user/login');
   }
   const { currentPassword, newPassword } = req.body;
+  const db = getDb();
   db.get('SELECT password FROM users WHERE id = ?', [req.session.userId], async (err, user) => {
     if (err) {
       return res.status(400).send(err);
     }
     if (user && await bcrypt.compare(currentPassword, user.password)) {
       const hashedPassword = await bcrypt.hash(newPassword, 10);
+      const db = getDb();
       db.run('UPDATE users SET password = ? WHERE id = ?', [hashedPassword, req.session.userId], (err) => {
         if (err) {
           return res.status(400).send(err);

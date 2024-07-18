@@ -2,7 +2,8 @@ const express = require('express');
 const router = express.Router();
 const multer = require('multer');
 const path = require('path');
-const db = require('../database'); // Import from database.js
+const { getDb } = require('../database');
+//const db = require('../database'); // Import from database.js
 const { isAuthenticated, isAdmin } = require('../middleware/auth');
 
 // Set up multer for file uploads
@@ -20,18 +21,21 @@ const upload = multer({ storage: storage });
 // Get all products
 router.get('/', (req, res) => {
 
+  const db = getDb();
   db.all('SELECT * FROM products', (err, products) => {
     if (err) {
       return res.status(500).send(err);
     }
 
     if (req.session.userId) {
+      const db = getDb();
       db.get('SELECT * FROM users WHERE id = ?', [req.session.userId], (err, user) => {
         if (err) {
           return res.status(500).send(err);
 	}
 
         // Get the cart item count for the user
+	const db = getDb();
         db.get('SELECT COUNT(*) as count FROM cart WHERE user_id = ?', [req.session.userId], (err, result) => {
           if (err) {
             return res.status(500).send(err);
@@ -49,6 +53,7 @@ router.get('/', (req, res) => {
 
 // Render add product page
 router.get('/add', isAdmin, (req, res) => {
+  const db = getDb();
   db.all('SELECT * FROM products', [], (err, products) => {
     if (err) {
        console.error(err);
@@ -64,6 +69,7 @@ router.post('/add', isAdmin, upload.single('image'), (req, res) => {
   const { name, price, description, productStatus } = req.body;
   const imageUrl = `/images/${req.file.filename}`;
 
+  const db = getDb();
   db.run(`INSERT INTO products (name, price, description, image_url, status) VALUES (?, ?, ?, ?, ?)`,
     [name, price, description, imageUrl, productStatus],
     (err) => {
@@ -79,6 +85,7 @@ router.post('/add', isAdmin, upload.single('image'), (req, res) => {
 router.delete('/remove/:id', (req, res) => {
   const productId = req.params.id;
 
+  const db = getDb();
   db.run('DELETE FROM products WHERE id = ?', [productId], function(err) {
     if (err) {
 	return res.status(500).json({ success: false, message: 'Failed to remove product' });
