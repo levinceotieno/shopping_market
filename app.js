@@ -3,12 +3,11 @@ const session = require('express-session');
 const path = require('path');
 const { isAuthenticated, isAdmin } = require('./middleware/auth');
 const methodOverride = require('method-override');
-const { initializeDatabase, getDb } = require('./database');
 
 const app = express();
 
 // Import the database
-//const db = require('./database');
+const db = require('./database');
 
 // Middleware
 app.use(express.static('public'));
@@ -16,7 +15,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(methodOverride('_method'));
 app.use(session({
-  secret: process.env.SESSION_SECRET || '346bdc2807207b7d90d6b5df9d1554d8561233c1ba0fef1cdb00052ef5da5ab700ce8c1a743126dbd7f37725dfb62002e5a0ba02955a421c99ec47325ae9f9c7',
+  secret: '346bdc2807207b7d90d6b5df9d1554d8561233c1ba0fef1cdb00052ef5da5ab700ce8c1a743126dbd7f37725dfb62002e5a0ba02955a421c99ec47325ae9f9c7',
   resave: false,
   saveUninitialized: true
 }));
@@ -43,7 +42,6 @@ app.get('/orders/admin', isAuthenticated, isAdmin, (req, res) => {
 
 // Example query to test SQLite connection
 app.get('/testdb', (req, res) => {
-  const db = getDb();
   db.get("SELECT datetime('now') as now", (err, row) => {
     if (err) {
       console.error(err);
@@ -55,12 +53,4 @@ app.get('/testdb', (req, res) => {
 });
 
 const PORT = process.env.PORT || 3000;
-
-initializeDatabase()
-  .then(() => {
-     app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
-  })
-  .catch((error) => {
-      console.error('Failed to start server:', error);
-      process.exit(1);
-  });
+app.listen(PORT, () => console.log(`Server started on port ${PORT}`));

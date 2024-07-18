@@ -1,8 +1,7 @@
 //order.js
 const express = require('express');
 const router = express.Router();
-const { getDb } = require('../database');
-//const db = require('../database'); // Import from database.js
+const db = require('../database'); // Import from database.js
 const { isAuthenticated } = require('../middleware/auth');
 
 // Add order
@@ -27,7 +26,6 @@ router.post('/', isAuthenticated, (req, res) => {
 	}
     }
 
-    const db = getDb();
     db.run(`INSERT INTO orders (user_id, total_price, address, pickup_point, delivery_date) VALUES (?, ?, ?, ?, ?)`,
         [userId, totalPrice, address, pickupPoint, deliveryDate.toISOString()],
         function(err) {
@@ -57,7 +55,6 @@ router.post('/', isAuthenticated, (req, res) => {
 // Get orders for user
 router.get('/', isAuthenticated, (req, res) => {
     const userId = req.session.userId;
-    const db = getDb();
     db.all(`
         SELECT o.id, o.total_price, o.address, o.pickup_point, o.status, o.delivery_date, op.product_id, op.quantity, p.name, p.image_url
         FROM orders o
@@ -90,14 +87,12 @@ router.get('/', isAuthenticated, (req, res) => {
             });
         });
 
-	const db = getDb();
         db.get('SELECT * FROM users WHERE id = ?', [userId], (err, user) => {
             if (err) {
 		console.error('SQL Error:', err);
                 return res.status(500).send(err);
             }
 
-	    const db = getDb();
             db.get('SELECT COUNT(*) as count FROM cart WHERE user_id = ?', [userId], (err, result) => {
                 if (err) {
 		    console.error('SQL Error:', err);
@@ -122,7 +117,6 @@ router.get('/admin', isAuthenticated, (req, res) => {
         return res.status(403).send('Access denied');
     }
 
-    const db = getDb();
     db.all(`
         SELECT o.id, o.user_id, u.username as userName, o.total_price, o.address, o.pickup_point, o.status, op.product_id, op.quantity, p.name
         FROM orders o
@@ -168,7 +162,7 @@ router.post('/update/:orderId', isAuthenticated, (req, res) => {
 
     const { status } = req.body;
     const { orderId } = req.params;
-    const db = getDb();
+
     db.run(`UPDATE orders SET status = ? WHERE id = ?`, [status, orderId], (err) => {
         if (err) {
             return res.status(500).send(err);
@@ -180,7 +174,7 @@ router.post('/update/:orderId', isAuthenticated, (req, res) => {
 // Clear orders for the logged-in user
 router.post('/clear', isAuthenticated, (req, res) => {
     const userId = req.session.userId;
-    const db = getDb();
+
     db.run(`DELETE FROM order_products WHERE order_id IN (SELECT id FROM orders WHERE user_id = ?)`, [userId], (err) => {
         if (err) {
             return res.status(500).json({ error: 'Failed to clear order products' });
