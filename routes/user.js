@@ -31,9 +31,24 @@ router.post('/register', async (req, res) => {
       [username, email, hashedPassword],
       (err) => {
         if (err) {
+	  console.error("User already exist:", err);
           return res.status(400).send(err);
         }
-        res.redirect('/user/login');
+	const { email, password } = req.body;
+	db.get('SELECT * FROM users WHERE email = ?', [email], async (err, user) => {
+	   if (err) {
+	      return res.status(400).send(err);
+	   }
+	   if (user && await bcrypt.compare(password, user.password)) {
+	      req.session.userId = user.id;
+	      req.session.isAdmin = user.is_admin === 1;
+	      res.redirect('/products');
+	   } else {
+	      res.status(400).send('Invalid credentials');
+	   }
+	}
+	);
+
       }
     );
   } catch (error) {
