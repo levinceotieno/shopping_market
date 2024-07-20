@@ -8,8 +8,8 @@
 /* Product grid styles */
 .product-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr); /* 3 columns */
-    gap: 5px; /* Space between grid items */
+    grid-template-columns: repeat(6, 1fr); /* 6 columns */
+    gap: 3px; /* Space between grid items */
 }
 
 /* Product item styles */
