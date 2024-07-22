@@ -313,17 +313,19 @@ body {
 }
 
 .admin-links a {
-    text-decoration: underline;
+    /* text-decoration: underline; */
     color: green; /* Customize link color */
     padding: 5px 10px; /* Add padding if needed */
     /* border: 1px solid green; */ /* Optional: Add border */
     border-radius: 5px; /* Optional: Add border-radius */
     /* box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2); */
+    background-color: lightcyan;
+    font-size: small;
 }
 
 .admin-links a:hover {
-    background-color: darkgreen; /* Change background color on hover */
-    color: white; /* Change text color on hover */
+    background-color: rgb(166, 253, 253); /* Change background color on hover */
+    color: darkgreen; /* Change text color on hover */
 }
 
 footer {
@@ -333,4 +335,67 @@ footer {
 
 footer a:hover {
     text-decoration: underline;
+}
+
+/* Search and filter styles */
+.search-filter {
+    background-color: #f9f9f9;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 15px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+#searchForm {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+}
+
+#searchForm input[type="text"],
+#searchForm input[type="number"] {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+#searchForm button {
+    background-color: green;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+#searchForm button:hover {
+    background-color: darkgreen;
+}
+
+#clearSearch {
+    background-color: #f44336;
+}
+
+#clearSearch:hover {
+    background-color: #d32f2f;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    #searchForm {
+        flex-direction: column;
+    }
+
+    #searchForm input[type="text"],
+    #searchForm input[type="number"],
+    #searchForm button {
+        width: 100%;
+    }
 }

@@ -155,5 +155,82 @@ function toggleCart() {
     cartElement.style.display = cartElement.style.display === 'none' ? 'block' : 'none';
 }
 
+function searchAndFilterProducts() {
+    const name = document.getElementById('searchName').value;
+    const minPrice = document.getElementById('minPrice').value;
+    const maxPrice = document.getElementById('maxPrice').value;
+  
+    const queryParams = new URLSearchParams();
+    if (name) queryParams.append('name', name);
+    if (minPrice) queryParams.append('minPrice', minPrice);
+    if (maxPrice) queryParams.append('maxPrice', maxPrice);
+  
+    fetch(`/products/search?${queryParams.toString()}`)
+      .then(response => response.json())
+      .then(products => {
+        const productGrid = document.querySelector('.product-grid');
+        productGrid.innerHTML = '';
+        products.forEach(product => {
+          const productElement = createProductElement(product);
+          productGrid.appendChild(productElement);
+        });
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        showToast('An error occurred while searching for products.', 'error');
+      });
+}
+
+function clearSearchAndShowAllProducts() {
+    document.getElementById('searchName').value = '';
+    document.getElementById('minPrice').value = '';
+    document.getElementById('maxPrice').value = '';
+  
+    fetch('/products')
+      .then(response => response.text())
+      .then(html => {
+          // Replace the entire body content with the new HTML
+          document.body.innerHTML = html;
+          attachEventListeners();
+      })
+      .catch(error => {
+         console.error('Error:', error);
+         showToast('An error occurred while fetching all products.', 'error');
+      });
+}
+  
+// Helper function to create a product element
+function createProductElement(product) {
+    const div = document.createElement('div');
+    div.className = 'product-item';
+    div.innerHTML = `
+      <img class="product-image" src="${product.image_url}" alt="${product.name}">
+      <h3 class="product-title">${product.name}</h3>
+      <p class="product-price">Ksh. ${product.price}</p>
+      <p class="product-description">${product.description}</p>
+      <p class="product-status">Status: ${product.status}</p>
+      <button class="btn add-cart" onclick="addToCart('${product.id}', '${product.name}', ${product.price}, '${product.image_url}')">Add to Cart</button>
+    `;
+    return div;
+}  
+
+// Add an event listener
+document.addEventListener('DOMContentLoaded', attachEventListeners);
+
+function attachEventListeners() {
+    const searchForm = document.getElementById('searchForm');
+    const clearSearchButton = document.getElementById('clearSearch');
+  
+    if (searchForm) {
+      searchForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        searchAndFilterProducts();
+      });
+    }
+    if (clearSearchButton) {
+       clearSearchButton.addEventListener('click', clearSearchAndShowAllProducts);
+    }
+}  
+
 // Initial cart display update
 updateCartDisplay();

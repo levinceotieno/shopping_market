@@ -1,10 +1,14 @@
 const express = require('express');
 const session = require('express-session');
+const http = require('http');
+const socketIo = require('socket.io');
 const path = require('path');
 const { isAuthenticated, isAdmin } = require('./middleware/auth');
 const methodOverride = require('method-override');
 
 const app = express();
+const server = http.createServer(app);
+const io = socketIo(server);
 
 // Import the database
 const db = require('./database');
@@ -52,5 +56,65 @@ app.get('/testdb', (req, res) => {
   });
 });
 
+app.get('/api/user-id', (req, res) => {
+  res.json({ userId: req.session.userId || 'guest' });
+});
+
+const connectedUsers = new Set();
+
+io.on('connection', (socket) => {
+  console.log('New client connected');
+
+  socket.on('join', (userId) => {
+    console.log('User joined:', userId);
+    socket.userId = userId;
+    socket.join(userId);
+    connectedUsers.add(userId);
+    io.to('admin').emit('newUser', userId);
+  });
+
+  socket.on('adminJoin', () => {
+    console.log('Admin joined');
+    socket.join('admin');
+    socket.emit('adminJoin', Array.from(connectedUsers));
+  });
+
+  socket.on('chatMessage', (msg) => {
+    console.log('Received message', msg);
+    io.to(msg.userId).to('admin').emit('chatMessage', msg);
+    
+    // Store message in database
+    db.run('INSERT INTO chat_messages (user_id, message, is_admin) VALUES (?, ?, ?)',
+      [msg.userId, msg.text, msg.isAdmin],
+      (err) => {
+        if (err) console.error('Error saving chat message:', err);
+      }
+    );
+
+    // Send notification to admin if message is from user
+    if (!msg.isAdmin) {
+      socket.to('admin').emit('notification', msg.userId);
+    }
+  });
+
+  socket.on('disconnect', () => {
+    if (socket.userId) {
+       connectedUsers.delete(socket.userId);
+    }
+    console.log('Client disconnected');
+  });
+});
+
+// Admin chat route
+app.get('/admin-chat', isAuthenticated, isAdmin, (req, res) => {
+  db.all('SELECT * FROM chat_messages ORDER BY timestamp DESC LIMIT 100', (err, messages) => {
+    if (err) {
+      console.error('Error retrieving chat history:', err);
+      messages = [];
+    }
+    res.render('admin-chat', { chatHistory: messages });
+  });
+});
+
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
+server.listen(PORT, () => console.log(`Server started on port ${PORT}`));

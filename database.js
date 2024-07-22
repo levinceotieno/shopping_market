@@ -61,6 +61,13 @@ db.serialize(() => {
     FOREIGN KEY(user_id) REFERENCES users(id),
     FOREIGN KEY(product_id) REFERENCES products(id)
   )`);
+  db.run(`CREATE TABLE IF NOT EXISTS chat_messages (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER,
+    message TEXT,
+    is_admin BOOLEAN,
+    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
+  )`);  
 });
 
 module.exports = db;

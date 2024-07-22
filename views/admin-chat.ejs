@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Chat</title>
+    <style>
+        .chat-room { border: 1px solid #ccc; margin: 10px; padding: 10px; }
+        .chat-messages { height: 200px; overflow-y: scroll; }
+    </style>
+</head>
+<body>
+    <h1>Admin Chat Interface</h1>
+    <div id="chat-rooms"></div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io({
+            transports: ['websocket'],
+            upgrade: false
+        });
+        const chatRooms = {};
+
+        socket.on('connect', () => {
+            console.log('Admin connected');
+            socket.emit('adminJoin');
+        });
+
+        socket.on('adminJoin', (users) => {
+            console.log('Admin joined, users:', users);
+            const chatRoomsDiv = document.getElementById('chat-rooms');
+            users.forEach(userId => createChatRoom(userId));
+        });
+
+        socket.on('newUser', (userId) => {
+            console.log('New user joined:', userId);
+            createChatRoom(userId);
+        });
+
+        socket.on('chatMessage', (msg) => {
+            console.log('Received message:', msg);
+            const chatMessages = document.getElementById(`chat-messages-${msg.userId}`);
+            if (chatMessages) {
+                const messageElement = document.createElement('div');
+                messageElement.textContent = msg.isAdmin ? 'Admin: ' + msg.text : `User ${msg.userId}: ` + msg.text;
+                chatMessages.appendChild(messageElement);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            } else {
+                console.error('Chat room not found for user:', msg.userId);
+            }
+        });
+
+        function createChatRoom(userId) {
+            if (chatRooms[userId]) return;
+
+            const chatRoomsDiv = document.getElementById('chat-rooms');
+            const roomDiv = document.createElement('div');
+            roomDiv.className = 'chat-room';
+            roomDiv.innerHTML = `
+                <h3>Chat with User ${userId}</h3>
+                <div id="chat-messages-${userId}" class="chat-messages"></div>
+                <input type="text" id="chat-input-${userId}" placeholder="Type your message...">
+                <button onclick="sendAdminMessage('${userId}')">Send</button>
+            `;
+            chatRoomsDiv.appendChild(roomDiv);
+            chatRooms[userId] = true;
+        }
+
+        function sendAdminMessage(userId) {
+            const messageInput = document.getElementById(`chat-input-${userId}`);
+            const message = messageInput.value;
+            if (message.trim()) {
+                socket.emit('chatMessage', { userId, text: message, isAdmin: true });
+                messageInput.value = '';
+            }
+        }
+    </script>
+</body>
+</html>
