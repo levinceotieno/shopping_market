@@ -8,7 +8,7 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "",
+  "description": "Welcome to Shopping Market! This is an online shopping platform where users can browse products, add them to the cart, and place orders with delivery options.",
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "ejs": "^3.1.10",
@@ -19,5 +19,6 @@
     "sequelize": "^6.37.3",
     "socket.io": "^4.7.5",
     "sqlite3": "^5.1.7"
-  }
+  },
+  "devDependencies": {}
 }

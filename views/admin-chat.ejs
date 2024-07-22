@@ -13,10 +13,7 @@
 
     <script src="/socket.io/socket.io.js"></script>
     <script>
-        const socket = io({
-            transports: ['websocket'],
-            upgrade: false
-        });
+        const socket = io();
         const chatRooms = {};
 
         socket.on('connect', () => {
@@ -24,15 +21,16 @@
             socket.emit('adminJoin');
         });
 
-        socket.on('adminJoin', (users) => {
-            console.log('Admin joined, users:', users);
-            const chatRoomsDiv = document.getElementById('chat-rooms');
-            users.forEach(userId => createChatRoom(userId));
+        socket.on('active_users', (users) => {
+            console.log('Active users:', users);
+            users.forEach(createChatRoom);
         });
 
-        socket.on('newUser', (userId) => {
-            console.log('New user joined:', userId);
-            createChatRoom(userId);
+        socket.on('newMessage', (userId) => {
+            console.log('New message from:', userId);
+            if (!chatRooms[userId]) {
+                createChatRoom(userId);
+            }
         });
 
         socket.on('chatMessage', (msg) => {
@@ -43,8 +41,6 @@
                 messageElement.textContent = msg.isAdmin ? 'Admin: ' + msg.text : `User ${msg.userId}: ` + msg.text;
                 chatMessages.appendChild(messageElement);
                 chatMessages.scrollTop = chatMessages.scrollHeight;
-            } else {
-                console.error('Chat room not found for user:', msg.userId);
             }
         });
 
@@ -62,12 +58,25 @@
             `;
             chatRoomsDiv.appendChild(roomDiv);
             chatRooms[userId] = true;
+
+            // Fetch chat history for this user
+            socket.emit('getChatHistory', userId);
         }
+
+        socket.on('chatHistory', (userId, messages) => {
+            const chatMessages = document.getElementById(`chat-messages-${userId}`);
+            messages.forEach(msg => {
+                const messageElement = document.createElement('div');
+                messageElement.textContent = msg.is_admin ? 'Admin: ' + msg.message : `User ${userId}: ` + msg.message;
+                chatMessages.appendChild(messageElement);
+            });
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        });
 
         function sendAdminMessage(userId) {
             const messageInput = document.getElementById(`chat-input-${userId}`);
-            const message = messageInput.value;
-            if (message.trim()) {
+            const message = messageInput.value.trim();
+            if (message) {
                 socket.emit('chatMessage', { userId, text: message, isAdmin: true });
                 messageInput.value = '';
             }

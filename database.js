@@ -64,8 +64,10 @@ db.serialize(() => {
   db.run(`CREATE TABLE IF NOT EXISTS chat_messages (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     user_id INTEGER,
+    admin_id TEXT,
     message TEXT,
     is_admin BOOLEAN,
+    is_read BOOLEAN DEFAULT 0,
     timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
   )`);  
 });

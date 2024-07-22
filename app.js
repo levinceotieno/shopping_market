@@ -69,32 +69,58 @@ io.on('connection', (socket) => {
     console.log('User joined:', userId);
     socket.userId = userId;
     socket.join(userId);
-    connectedUsers.add(userId);
-    io.to('admin').emit('newUser', userId);
+    //connectedUsers.add(userId);
+    //io.to('admin').emit('newUser', userId);
+    db.all('SELECT * FROM chat_messages WHERE user_id = ? AND is_read = 0', [userId], (err, messages) => {
+       if (err) console.error(err);
+       else socket.emit('chat_history', messages);
+    });
   });
 
   socket.on('adminJoin', () => {
     console.log('Admin joined');
     socket.join('admin');
-    socket.emit('adminJoin', Array.from(connectedUsers));
+    
+    db.all('SELECT DISTINCT user_id FROM chat_messages', (err, users) => {
+	if (err) console.error(err);
+	else socket.emit('active_users', users.map(user => user.user_id));
+    });
   });
 
   socket.on('chatMessage', (msg) => {
     console.log('Received message', msg);
-    io.to(msg.userId).to('admin').emit('chatMessage', msg);
-    
     // Store message in database
     db.run('INSERT INTO chat_messages (user_id, message, is_admin) VALUES (?, ?, ?)',
       [msg.userId, msg.text, msg.isAdmin],
       (err) => {
-        if (err) console.error('Error saving chat message:', err);
+        if (err) {
+	  console.error('Error saving chat message:', err);
+	} else {
+	  io.to(msg.userId).to('admin').emit('chatMessage', msg);
+	  // Send notification to admin if message is from user
+          if (!msg.isAdmin) {
+             io.to('admin').emit('newMessage', msg.userId);
+	  }
+	}
       }
     );
+  });
 
-    // Send notification to admin if message is from user
-    if (!msg.isAdmin) {
-      socket.to('admin').emit('notification', msg.userId);
-    }
+  socket.on('fetchMessages', (userId) => {
+     db.all('SELECT * FROM chat_messages WHERE user_id = ? ORDER BY timestamp ASC', [userId], (err, messages) => {
+	if (err) {
+	   console.error('Error fetching messages:', err);
+	} else {
+	  socket.emit('existingMessages', userId, messages);
+	}
+     });
+  });
+
+  socket.on('clearChat', (userId) => {
+     db.run('DELETE FROM chat_messages WHERE user_id = ?', [userId], (err) => {
+	if (err) console.error('Error clearing chat:', err);
+	else socket.emit('chatCleared');
+     });
   });
 
   socket.on('disconnect', () => {

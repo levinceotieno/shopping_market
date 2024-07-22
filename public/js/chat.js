@@ -1,29 +1,35 @@
 let socket;
-let userId;
+let userId = localStorage.getItem('chatUserId') || generateUniqueId();
+localStorage.setItem('chatUserId', userId);
 
 function initializeChat() {
     if (!socket) {
-        socket = io({
-            transports: ['websocket'],
-            upgrade: false
-        });
+       socket = io();
 
-        fetch('/api/user-id')
-            .then(response => response.json())
-            .then(data => {
-                userId = data.userId;
-                socket.emit('join', userId);
-            });
+       if (!userId) {
+	  userId = 'user_' + Math.random().toString(36).substr(2, 9);
+	  localStorage.setItem('chatUserId', userId);
+       }
 
-        socket.on('chatMessage', (msg) => {
-            displayMessage(msg);
-        });
+       socket.emit('join', userId);
 
-        socket.on('notification', () => {
-            if (document.getElementById('chat-widget').style.display === 'none') {
-                document.getElementById('chat-notification').style.display = 'block';
-            }
-        });
+       socket.on('chat_history', (messages) => {
+	   const chatMessages = document.getElementById('chat-messages');
+	   chatMessages.innerHTML = '';
+	   messages.forEach(msg => {
+	      const messageElement = document.createElement('div');
+	      messageElement.textContent = msg.is_admin ? 'Admin: ' + msg.message : 'You: ' + msg.message;
+	      messageElement.className = msg.is_admin ? 'admin-message' : 'user-message';
+	      chatMessages.appendChild(messageElement);
+	   });
+	   chatMessages.scrollTop = chatMessages.scrollHeight;
+       });
+
+       socket.on('chatMessage', displayMessage);
+
+       socket.on('chatCleared', () => {
+	  document.getElementById('chat-messages').innerHTML = '';
+       });
     }
 }
 
@@ -38,12 +44,16 @@ function toggleChat() {
 
 function sendMessage() {
     const messageInput = document.getElementById('chat-message');
-    const message = messageInput.value;
-    if (message.trim() && socket) {
+    const message = messageInput.value.trim();
+    if (message && socket) {
         socket.emit('chatMessage', { userId, text: message, isAdmin: false });
         messageInput.value = '';
-        // We no longer immediately display the sent message here
+        // doesnt immediately display the sent message here
     }
+}
+
+function clearChat() {
+   socket.emit('clearChat', userId);
 }
 
 function displayMessage(msg) {
@@ -54,5 +64,15 @@ function displayMessage(msg) {
     chatMessages.appendChild(messageElement);
     chatMessages.scrollTop = chatMessages.scrollHeight;
 }
+
+function generateUniqueId() {
+   return 'user_' + Math.random().toString(36).substr(2, 9);
+}
+
+socket.on('notification', (userId) => {
+   if (document.getElementById('chat-widget').style.display === 'none') {
+      document.getElementById('chat-notification').style.display = 'block';
+   }
+});
 
 document.addEventListener('DOMContentLoaded', initializeChat);
