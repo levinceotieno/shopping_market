@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Admin Chat</title>
+  <style>
+    .chat-room { border: 1px solid #ccc; margin: 10px; padding: 10px; }
+    .chat-messages { height: 200px; overflow-y: scroll; }
+  </style>
+</head>
+<body>
+  <h1>Admin Chat Interface</h1>
+  <div id="chat-rooms"></div>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+    const chatRooms = {};
+
+    socket.on('connect', () => {
+      console.log('Admin connected');
+      socket.emit('adminJoin');
+    });
+
+    socket.on('active_users', (users) => {
+      console.log('Active users:', users);
+      users.forEach(createChatRoom);
+    });
+
+    socket.on('newMessage', (userEmail) => {
+      console.log('New message from:', userEmail);
+      if (!chatRooms[userEmail]) {
+        createChatRoom(userEmail);
+      }
+    });
+
+    socket.on('chatMessage', (msg) => {
+      console.log('Received message:', msg);
+      const chatMessages = document.getElementById(`chat-messages-${msg.userEmail}`);
+      if (chatMessages) {
+        const messageElement = document.createElement('div');
+        messageElement.textContent = msg.isAdmin ? 'Admin: ' + msg.text : `User ${msg.userEmail}: ` + msg.text;
+        chatMessages.appendChild(messageElement);
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+      }
+    });
+
+    function createChatRoom(userEmail) {
+      if (chatRooms[userEmail]) return;
+
+      const chatRoomsDiv = document.getElementById('chat-rooms');
+      const roomDiv = document.createElement('div');
+      roomDiv.className = 'chat-room';
+      roomDiv.innerHTML = `
+        <h3>Chat with ${userEmail}</h3>
+        <div id="chat-messages-${userEmail}" class="chat-messages"></div>
+        <input type="text" id="chat-input-${userEmail}" placeholder="Type your message...">
+        <button onclick="sendAdminMessage('${userEmail}')">Send</button>
+      `;
+      chatRoomsDiv.appendChild(roomDiv);
+      chatRooms[userEmail] = true;
+
+      // Fetch chat history for this user
+      socket.emit('getChatHistory', userEmail);
+    }
+
+    socket.on('chatHistory', (userEmail, messages) => {
+      const chatMessages = document.getElementById(`chat-messages-${userEmail}`);
+      messages.forEach(msg => {
+        const messageElement = document.createElement('div');
+        messageElement.textContent = msg.is_admin ? 'Admin: ' + msg.message : `User: ` + msg.message;
+        chatMessages.appendChild(messageElement);
+      });
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    });
+
+    function sendAdminMessage(userEmail) {
+      const messageInput = document.getElementById(`chat-input-${userEmail}`);
+      const message = messageInput.value.trim();
+      if (message) {
+        socket.emit('chatMessage', { userEmail, text: message, isAdmin: true });
+        messageInput.value = '';
+      }
+    }
+  </script>
+</body>
+</html>

@@ -63,7 +63,7 @@ db.serialize(() => {
   )`);
   db.run(`CREATE TABLE IF NOT EXISTS chat_messages (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    user_id INTEGER,
+    user_email TEXT,
     admin_id TEXT,
     message TEXT,
     is_admin BOOLEAN,

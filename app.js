@@ -60,18 +60,33 @@ app.get('/api/user-id', (req, res) => {
   res.json({ userId: req.session.userId || 'guest' });
 });
 
+app.get('/api/user-email', (req, res) => {
+   if (req.session.userId) {
+      db.get('SELECT email FROM users WHERE id = ?', [req.session.userId], (err, row) => {
+	if (err) {
+	   res.status(500).json({ error: 'Database error' });
+	} else if (row) {
+	   res.json({ email: row.email });
+	} else {
+	   res.status(404).json({ error: 'User not found' });
+	}
+      });
+   } else {
+      res.json({ email: null });
+   }
+});
+
 const connectedUsers = new Set();
 
 io.on('connection', (socket) => {
   console.log('New client connected');
 
-  socket.on('join', (userId) => {
-    console.log('User joined:', userId);
-    socket.userId = userId;
-    socket.join(userId);
-    //connectedUsers.add(userId);
-    //io.to('admin').emit('newUser', userId);
-    db.all('SELECT * FROM chat_messages WHERE user_id = ? AND is_read = 0', [userId], (err, messages) => {
+  socket.on('join', (email) => {
+    console.log('User joined:', email);
+    socket.userEmail = email;
+    socket.join(email);
+    
+    db.all('SELECT * FROM chat_messages WHERE user_email = ? ORDER BY timestamp ASC', [email], (err, messages) => {
        if (err) console.error(err);
        else socket.emit('chat_history', messages);
     });
@@ -81,51 +96,56 @@ io.on('connection', (socket) => {
     console.log('Admin joined');
     socket.join('admin');
     
-    db.all('SELECT DISTINCT user_id FROM chat_messages', (err, users) => {
+    db.all('SELECT DISTINCT user_email FROM chat_messages', (err, users) => {
 	if (err) console.error(err);
-	else socket.emit('active_users', users.map(user => user.user_id));
+	else socket.emit('active_users', users.map(user => user.user_email));
     });
   });
 
   socket.on('chatMessage', (msg) => {
+    if (!msg.userEmail || !msg.text || typeof msg.isAdmin === 'undefined') {
+       console.error('Invalid message format:', msg);
+       return;
+    }
     console.log('Received message', msg);
+       
     // Store message in database
-    db.run('INSERT INTO chat_messages (user_id, message, is_admin) VALUES (?, ?, ?)',
-      [msg.userId, msg.text, msg.isAdmin],
+    db.run('INSERT INTO chat_messages (user_email, message, is_admin) VALUES (?, ?, ?)',
+      [msg.userEmail, msg.text, msg.isAdmin],
       (err) => {
         if (err) {
 	  console.error('Error saving chat message:', err);
 	} else {
-	  io.to(msg.userId).to('admin').emit('chatMessage', msg);
+	  io.to(msg.userEmail).to('admin').emit('chatMessage', msg);
 	  // Send notification to admin if message is from user
           if (!msg.isAdmin) {
-             io.to('admin').emit('newMessage', msg.userId);
+             io.to('admin').emit('newMessage', msg.userEmail);
 	  }
 	}
       }
     );
   });
 
-  socket.on('fetchMessages', (userId) => {
-     db.all('SELECT * FROM chat_messages WHERE user_id = ? ORDER BY timestamp ASC', [userId], (err, messages) => {
+  socket.on('getChatHistory', (userEmail) => {
+     db.all('SELECT * FROM chat_messages WHERE user_email = ? ORDER BY timestamp ASC', [userEmail], (err, messages) => {
 	if (err) {
-	   console.error('Error fetching messages:', err);
+	   console.error('Error fetching chat history:', err);
 	} else {
-	  socket.emit('existingMessages', userId, messages);
+	  socket.emit('chatHistory', userEmail, messages);
 	}
      });
   });
 
-  socket.on('clearChat', (userId) => {
-     db.run('DELETE FROM chat_messages WHERE user_id = ?', [userId], (err) => {
+  socket.on('clearChat', (userEmail) => {
+     db.run('DELETE FROM chat_messages WHERE user_email = ?', [userEmail], (err) => {
 	if (err) console.error('Error clearing chat:', err);
 	else socket.emit('chatCleared');
      });
   });
 
   socket.on('disconnect', () => {
-    if (socket.userId) {
-       connectedUsers.delete(socket.userId);
+    if (socket.userEmail) {
+       connectedUsers.delete(socket.userEmail);
     }
     console.log('Client disconnected');
   });

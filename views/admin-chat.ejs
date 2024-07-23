@@ -26,58 +26,58 @@
             users.forEach(createChatRoom);
         });
 
-        socket.on('newMessage', (userId) => {
-            console.log('New message from:', userId);
-            if (!chatRooms[userId]) {
-                createChatRoom(userId);
+        socket.on('newMessage', (userEmail) => {
+            console.log('New message from:', userEmail);
+            if (!chatRooms[userEmail]) {
+                createChatRoom(userEmail);
             }
         });
 
         socket.on('chatMessage', (msg) => {
             console.log('Received message:', msg);
-            const chatMessages = document.getElementById(`chat-messages-${msg.userId}`);
+            const chatMessages = document.getElementById(`chat-messages-${msg.userEmail}`);
             if (chatMessages) {
                 const messageElement = document.createElement('div');
-                messageElement.textContent = msg.isAdmin ? 'Admin: ' + msg.text : `User ${msg.userId}: ` + msg.text;
+                messageElement.textContent = msg.isAdmin ? 'Admin: ' + msg.text : `User ${msg.userEmail}: ` + msg.text;
                 chatMessages.appendChild(messageElement);
                 chatMessages.scrollTop = chatMessages.scrollHeight;
             }
         });
 
-        function createChatRoom(userId) {
-            if (chatRooms[userId]) return;
+        function createChatRoom(userEmail) {
+            if (chatRooms[userEmail]) return;
 
             const chatRoomsDiv = document.getElementById('chat-rooms');
             const roomDiv = document.createElement('div');
             roomDiv.className = 'chat-room';
             roomDiv.innerHTML = `
-                <h3>Chat with User ${userId}</h3>
-                <div id="chat-messages-${userId}" class="chat-messages"></div>
-                <input type="text" id="chat-input-${userId}" placeholder="Type your message...">
-                <button onclick="sendAdminMessage('${userId}')">Send</button>
+                <h3>Chat with ${userEmail}</h3>
+                <div id="chat-messages-${userEmail}" class="chat-messages"></div>
+                <input type="text" id="chat-input-${userEmail}" placeholder="Type your message...">
+                <button onclick="sendAdminMessage('${userEmail}')">Send</button>
             `;
             chatRoomsDiv.appendChild(roomDiv);
-            chatRooms[userId] = true;
+            chatRooms[userEmail] = true;
 
             // Fetch chat history for this user
-            socket.emit('getChatHistory', userId);
+            socket.emit('getChatHistory', userEmail);
         }
 
-        socket.on('chatHistory', (userId, messages) => {
-            const chatMessages = document.getElementById(`chat-messages-${userId}`);
+        socket.on('chatHistory', (userEmail, messages) => {
+            const chatMessages = document.getElementById(`chat-messages-${userEmail}`);
             messages.forEach(msg => {
                 const messageElement = document.createElement('div');
-                messageElement.textContent = msg.is_admin ? 'Admin: ' + msg.message : `User ${userId}: ` + msg.message;
+                messageElement.textContent = msg.is_admin ? 'Admin: ' + msg.message : `User: ` + msg.message;
                 chatMessages.appendChild(messageElement);
             });
             chatMessages.scrollTop = chatMessages.scrollHeight;
         });
 
-        function sendAdminMessage(userId) {
-            const messageInput = document.getElementById(`chat-input-${userId}`);
+        function sendAdminMessage(userEmail) {
+            const messageInput = document.getElementById(`chat-input-${userEmail}`);
             const message = messageInput.value.trim();
             if (message) {
-                socket.emit('chatMessage', { userId, text: message, isAdmin: true });
+                socket.emit('chatMessage', { userEmail, text: message, isAdmin: true });
                 messageInput.value = '';
             }
         }
