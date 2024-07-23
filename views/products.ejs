@@ -45,6 +45,7 @@
       <% if (isAdmin) { %>
 	<a href="/orders/admin">Update Placed Orders</a>
 	<a href="/products/add">Add Products</a>
+	<a href="/admin-chat">Chat Room</a>
       <% } %>
       </div>
      </div>
@@ -102,14 +103,14 @@
       <button class="btn check-out" onclick="checkout()">Checkout</button>
     </div>
 
-    <div id="chat-widget" style="display: none; position: fixed; bottom: 20px; right: 20px; width: 300px; border: 1px solid #ccc; background: white;">
-        <div id="chat-messages" style="height: 300px; overflow-y: scroll; padding: 10px;"></div>
-        <input type="text" id="chat-message" placeholder="Type your message...">
-        <button onclick="sendMessage()">Send</button>
+    <div id="chat-widget" class="chat-widget">
+	<div id="chat-messages" class="chat-messages"></div>
+	<input type="text" id="chat-message" placeholder="Type your message...">
+	<button onclick="sendMessage()">Send</button>
 	<button onclick="clearChat()">Clear Chat</button>
-      </div>
-      <button onclick="toggleChat()" style="position: fixed; bottom: 20px; right: 20px;">Chat</button>
-      <div id="chat-notification" style="display: none; position: fixed; bottom: 70px; right: 20px; background: red; color: white; padding: 5px;">New Message</div>
+    </div>
+    <button id="chat-toggle" onclick="toggleChat()">Chat</button>
+    <div id="chat-notification" class="chat-notification">New Message</div>
       
     <footer>
        <p>&copy; 2024 Shopping Market. All rights reserved. Authors: Susan Kimemia & Levince Otieno. Contact: <a href="mailto:shopping_market@gmail.com">shopping_market@gmail.com</a></p>
