@@ -105,9 +105,6 @@ io.on('connection', (socket) => {
   socket.on('chatMessage', (msg) => {
     if (!msg.userEmail || !msg.text || typeof msg.isAdmin === 'undefined') {
        console.error('Invalid message format:', msg);
-       if (typeof callback === 'function') {
-          callback({ status: 'error', message: 'Invalid message format' });
-       }
        return;
     }
     console.log('Received message', msg);
@@ -118,17 +115,11 @@ io.on('connection', (socket) => {
       (err) => {
 	  if (err) {
 	     console.error('Error saving chat message:', err);
-	     if (typeof callback === 'function') {
-		callback({ status: 'error', message: 'Failed to save message' });
-	     }
 	  } else {
 	    io.to(msg.userEmail).to('admin').emit('chatMessage', msg);
 	    // Send notification to admin if message is from user
 	    if (!msg.isAdmin) {
 	       io.to('admin').emit('newMessage', msg.userEmail);
-	    }
-	    if (typeof callback === 'function') {
-	       callback({ status: 'ok' });
 	    }
 	  }
       }

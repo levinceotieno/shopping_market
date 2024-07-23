@@ -1,6 +1,5 @@
 let socket;
 let userEmail;
-//let localMessageIds = new Set();
 
 function initializeChat() {
   if (!socket) {
@@ -18,10 +17,10 @@ function initializeChat() {
     socket.on('chat_history', (messages) => {
       const chatMessages = document.getElementById('chat-messages');
       chatMessages.innerHTML = '';
-      messages.forEach(msg => displayMessage(msg, false));
+      messages.forEach(displayMessage);
     });
 
-    socket.on('chatMessage', msg => displayMessage(msg, false));
+    socket.on('chatMessage', displayMessage);
 
     socket.on('chatCleared', () => {
       document.getElementById('chat-messages').innerHTML = '';
@@ -33,20 +32,7 @@ function sendMessage() {
   const messageInput = document.getElementById('chat-message');
   const message = messageInput.value.trim();
   if (message && socket && userEmail) {
-    const msg = { userEmail, text: message, isAdmin: false };
-    
-    // Display message immediately on client side
-    displayMessage({ message: msg.text, is_admin: msg.isAdmin }, true);
-   
-    socket.emit('chatMessage', msg, (response) => {
-       if (response && response.status === 'ok') {
-	  console.log('Message sent successfully');
-       } else {
-	 console.error('Failed to send message:', response ? response.message : 'No response');
-	 // Optionally, remove the message from the chat if failed to send
-       }
-    });
-
+    socket.emit('chatMessage', { userEmail, text: message, isAdmin: false });
     messageInput.value = '';
   }
 }
@@ -57,18 +43,11 @@ function clearChat() {
   }
 }
 
-function displayMessage(msg, isLocal = false) {
+function displayMessage(msg) {
+  //if (!msg.message) return;
   const chatMessages = document.getElementById('chat-messages');
   const messageElement = document.createElement('div');
-  
-  // For local messages, use the structure we know
-  if (isLocal) {
-    messageElement.textContent = msg.is_admin ? 'Admin: ' + msg.message : 'You: ' + msg.message;
-  } else {
-    // For server messages, check the structure
-    messageElement.textContent = msg.is_admin ? 'Admin: ' + msg.message : 'You: ' + (msg.message || msg.text);
-  }
-  
+  messageElement.textContent = msg.is_admin ? 'Admin: ' + msg.message : 'You: ' + msg.message;
   messageElement.className = msg.is_admin ? 'admin-message' : 'user-message';
   chatMessages.appendChild(messageElement);
   chatMessages.scrollTop = chatMessages.scrollHeight;
@@ -82,5 +61,10 @@ function toggleChat() {
   }
   initializeChat();
 }
+
+socket.on('chatMessage', (msg, ack) => {
+   displayMessage(msg); // Only display if server acknowledges (optional)
+   if (ack) ack(); // Optional: confirm message received
+});
 
 document.addEventListener('DOMContentLoaded', initializeChat);
