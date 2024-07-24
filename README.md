@@ -21,6 +21,7 @@ Welcome to Shopping Market! This is an online shopping platform where users can 
 - **Order Placement**: Checkout with delivery options and automatic calculation of delivery time based on location.
 - **Order History**: Users can view their past orders.
 - **Admin Panel**: Admins can manage products and orders.
+- **Chat Widget**: Customer can easily get support, just chat with admin.
 
 ## Design
 
